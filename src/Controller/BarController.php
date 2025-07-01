@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class BarController extends AbstractController
+{
+    #[Route('/bar', name: 'app_bar')]
+    public function index(Request $request): JsonResponse
+    {
+        $client = $request->attributes->get('client');
+
+        return $this->json([
+            'success' => true,
+            'user' => $client->getName(),
+            'limits' => [
+                'maxLimit' => $client->getMaxLimitFor('bar'),
+                'interval' => $client->getIntervalFor('bar'),
+            ],
+        ]);
+    }
+}
