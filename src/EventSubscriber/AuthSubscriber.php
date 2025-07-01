@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
-class AuthSubscriber implements EventSubscriberInterface
+readonly class AuthSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private ClientRepository $clientRepository
