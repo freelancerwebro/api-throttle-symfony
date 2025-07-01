@@ -1,25 +1,25 @@
-# PHP with required extensions
-FROM php:8.3-cli
+# Base image with PHP and necessary extensions
+FROM php:8.2-cli
 
-# Install system packages
+# Install system dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
-    unzip git zip curl libicu-dev libpq-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install intl pdo pdo_pgsql pdo_mysql zip
+    unzip git zip curl libicu-dev libonig-dev libxml2-dev libzip-dev sqlite3 libsqlite3-dev \
+    && docker-php-ext-install intl pdo pdo_sqlite pdo_mysql zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Copy app
+# Copy your app source into the container
 COPY . .
 
-# Install PHP dependencies
+# Install PHP dependencies without dev, optimize for production
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose Symfony public folder
+# Expose the public port used by PHP server
 EXPOSE 10000
 
-# Run Symfony with built-in PHP server
+# Start Symfony using built-in PHP web server
 CMD ["php", "-S", "0.0.0.0:10000", "-t", "public"]
