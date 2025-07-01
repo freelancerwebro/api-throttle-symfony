@@ -1,22 +1,24 @@
 services:
-    - type: web
-      name: symfony-api-throttling
-      env: docker
-      plan: free
-      branch: main
-      buildFilter:
-          paths:
-              - Dockerfile
-      envVars:
-          - key: APP_ENV
-            value: prod
-          - key: APP_SECRET
-            value: abc123
-          - key: DATABASE_URL
-            value: sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db
-          - key: APP_RATE_LIMIT_STORAGE
-            value: sqlite
-      buildCommand: |
-          composer install --no-dev --optimize-autoloader && \
-          php bin/console cache:clear && \
-          php bin/console doctrine:migrations:migrate --no-interaction
+    -   type: web
+        name: symfony-api
+        branch: main
+        plan: free
+        buildCommand: |
+            composer install --no-dev --optimize-autoloader && \
+            php bin/console doctrine:schema:update --force && \
+            php bin/console cache:clear && \
+            php bin/console doctrine:migrations:migrate --no-interaction && \
+            php bin/console doctrine:fixtures:load
+        startCommand: |
+            php bin/console cache:warmup && \
+            php -S 0.0.0.0:10000 -t public
+        envVars:
+            -   key: APP_ENV
+                value: prod
+            -   key: APP_SECRET
+                value: your_secret_here
+            -   key: DATABASE_URL
+                value: sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db
+            -   key: APP_RATE_LIMIT_STORAGE
+                value: sqlite
+        runtime: docker
