@@ -38,7 +38,7 @@ class SqliteStorage implements RateLimitStorageInterface
 
         $entry->setFieldValue(serialize($value));
 
-        if ($ttlInSeconds !== null) {
+        if ($ttlInSeconds !== null && $ttlInSeconds > 0) {
             $entry->setExpiresAt(new \DateTimeImmutable()->add(new \DateInterval("PT{$ttlInSeconds}S")));
         } else {
             $entry->setExpiresAt(null);
