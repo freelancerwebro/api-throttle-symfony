@@ -25,14 +25,19 @@ This project demonstrates custom API throttling with two endpoints, supporting d
    ```bash
     composer install
     ```
-4. Start the Symfony server:
+4. Run migrations:
    ```bash
-    symfony server:start
+    php bin/console doctrine:migrations:migrate
     ```
 5. Load test data:
    ```bash
    php bin/console doctrine:fixtures:load
    ```
+6. Start the Symfony server:
+   ```bash
+    symfony server:start
+    ```
+   
 ## Example Requests
 Fixed Window - client 1
   ```bash
